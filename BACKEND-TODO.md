@@ -4,13 +4,13 @@ The frontend is complete and runs entirely on an in-memory mock store.
 Everything the backend must provide is already modeled in the frontend —
 use these two files as the contract:
 
-- [`src/types.ts`](src/types.ts) — entity shapes the UI expects
-- [`src/store.tsx`](src/store.tsx) — the CRUD operations to replace with API calls
-- [`src/data/mock.ts`](src/data/mock.ts) — realistic sample data (useful as seed data)
+- [`frontend/src/types.ts`](frontend/src/types.ts) — entity shapes the UI expects
+- [`frontend/src/store.tsx`](frontend/src/store.tsx) — the CRUD operations to replace with API calls
+- [`frontend/src/data/mock.ts`](frontend/src/data/mock.ts) — realistic sample data (useful as seed data)
 
 ## 1. Database schema
 
-Five tables, matching `src/types.ts`:
+Five tables, matching `frontend/src/types.ts`:
 
 | Table | Columns | Notes |
 |---|---|---|
@@ -29,7 +29,7 @@ Decisions needed:
 
 ## 2. Auth
 
-A login page already exists at [`src/pages/Login.tsx`](src/pages/Login.tsx):
+A login page already exists at [`frontend/src/pages/Login.tsx`](frontend/src/pages/Login.tsx):
 username + password form, inline error on bad credentials, and a sign-out
 button in the sidebar. It currently authenticates against the mock admin list
 in `store.tsx` (`login()` / `logout()` there are the functions to rewire).
@@ -90,13 +90,13 @@ would avoid shipping all rows:
 
 - [ ] `GET /dashboard` → active employee count, low-stock items
       (amount < threshold, currently 25 — see `LOW_STOCK_THRESHOLD` in
-      `src/types.ts`), orders today, orders this month, 8 most recent orders
+      `frontend/src/types.ts`), orders today, orders this month, 8 most recent orders
 - [ ] Decide where the low-stock threshold lives (global config vs. per-item
       column). Per-item was already flagged as a likely future need.
 
 ## 6. Ops
 
-- [ ] Seed script from `src/data/mock.ts` (minus plaintext passwords)
+- [ ] Seed script from `frontend/src/data/mock.ts` (minus plaintext passwords)
 - [ ] CORS for the Vite dev origin (http://localhost:5173) or serve the built
       `dist/` from the backend
 - [ ] If serving `dist/`: SPA history fallback — unknown paths must return
@@ -108,6 +108,6 @@ would avoid shipping all rows:
 ## Frontend integration point
 
 When the API is ready, the only frontend file that changes materially is
-[`src/store.tsx`](src/store.tsx): its `useState` + setter functions get
+[`frontend/src/store.tsx`](frontend/src/store.tsx): its `useState` + setter functions get
 replaced by fetch calls (or React Query). Component code stays as-is because
 everything consumes the store through the `useStore()` hook.
