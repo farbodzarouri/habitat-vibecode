@@ -42,6 +42,7 @@ in `store.tsx` (`login()` / `logout()` there are the functions to rewire).
       also needed to restore the session on page reload (the mock version
       forgets the login on refresh — a real token/cookie fixes this)
 - [ ] Password hashing + verification
+- [ ] Rate-limit / lockout on repeated failed logins
 - [ ] Role checks if desired (e.g. only Admin manages employees) — the UI has
       roles but currently gates nothing on them
 - [ ] Remove the demo-credentials hint from the login page once real auth lands
@@ -51,7 +52,9 @@ in `store.tsx` (`login()` / `logout()` there are the functions to rewire).
 Standard CRUD for each entity. The frontend performs these operations today
 against local state:
 
-- `GET/POST /admins`, `PUT/DELETE /admins/:id`
+- `GET/POST /admins`, `PUT/DELETE /admins/:id` — responses must **never**
+  include the password/hash field, even though the frontend `Admin` type has
+  one (it exists only for the mock login; the UI never displays it)
 - `GET /categories`
 - `GET/POST /stock`, `PUT/DELETE /stock/:id`
 - `GET/POST /customers`, `PUT/DELETE /customers/:id`
@@ -96,6 +99,9 @@ would avoid shipping all rows:
 - [ ] Seed script from `src/data/mock.ts` (minus plaintext passwords)
 - [ ] CORS for the Vite dev origin (http://localhost:5173) or serve the built
       `dist/` from the backend
+- [ ] If serving `dist/`: SPA history fallback — unknown paths must return
+      `index.html` (client-side routing handles them), or deep links like
+      `/customers/3` will 404 on refresh
 - [ ] Environment config for the frontend: we'll read the API base URL from
       `import.meta.env.VITE_API_URL` once endpoints exist
 
