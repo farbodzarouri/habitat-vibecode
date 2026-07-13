@@ -1,5 +1,34 @@
 # Backend TODO — Valentein Chocolate internal tool
 
+## 0. API v1 gaps (found while wiring the frontend to the live API)
+
+The frontend is now connected to the Spring Boot API through an adapter
+([`frontend/src/api.ts`](frontend/src/api.ts)) and a Vite dev proxy
+(`/api` → `localhost:8080`). It works, but the adapter papers over these
+gaps — each one currently degrades the UX:
+
+- [ ] **No update or delete endpoints** for any entity — edit/delete in the
+      UI is local-only and lost on refresh until PUT/DELETE exist
+- [ ] **Stock is missing `type`, `category_id`, `code`**, and there is no
+      Category entity/endpoint at all — the UI derives a fake code (`STK-{id}`)
+      and shows no category for API data
+- [ ] **`GET /stocks/all/ids` returns only ids** — the frontend must issue one
+      request per item (N+1); return full objects like the other `/all` routes
+- [ ] **Login returns only a string** — return the admin object (minus
+      password) so the UI doesn't have to look the user up separately
+- [ ] **Admin responses include the plaintext `password`** — serious: strip it
+      (see §2/§4 below; the frontend discards it, but it's still on the wire)
+- [ ] **Customer address is an embedded object** (street/city/state/postalCode/
+      country) while the UI uses one address line — either is fine, but pick one
+      and tell us; the adapter currently stuffs the whole line into `street`
+- [ ] **Order requires a client-generated unique `idempotencyKey`** — fine,
+      but document it; the frontend sends `crypto.randomUUID()`
+- [ ] **No seed data** — the H2 in-memory DB starts empty, so nobody can log
+      in; the frontend currently auto-seeds demo data on first connect
+      (`seedIfEmpty` in `api.ts`) — move seeding server-side and delete that
+- [ ] **`frontend/pom.xml` pins Node v16** — the Vite build needs Node ≥ 18;
+      bump `nodeVersion` in the frontend-maven-plugin config
+
 The frontend is complete and runs entirely on an in-memory mock store.
 Everything the backend must provide is already modeled in the frontend —
 use these two files as the contract:

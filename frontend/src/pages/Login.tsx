@@ -9,12 +9,12 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
 
-  const submit = () => {
+  const submit = async () => {
     if (!username.trim() || !password) {
       setError('Enter your username and password.')
       return
     }
-    if (!login(username, password)) {
+    if (!(await login(username, password))) {
       setError('Incorrect username or password.')
       return
     }
