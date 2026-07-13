@@ -1,6 +1,7 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { StoreProvider, useStore } from './store'
 import { Layout } from './components/Layout'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { Login } from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
 import { Employees } from './pages/Employees'
@@ -22,6 +23,7 @@ function AppRoutes() {
           <Route path="/orders" element={<Orders />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/customers/:id" element={<CustomerDetail />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
     </BrowserRouter>
@@ -30,8 +32,10 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <StoreProvider>
-      <AppRoutes />
-    </StoreProvider>
+    <ErrorBoundary>
+      <StoreProvider>
+        <AppRoutes />
+      </StoreProvider>
+    </ErrorBoundary>
   )
 }
